@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "生财网站收藏助手",
+  "version": "1.0.0",
+  "description": "专门针对生财网站的内容收藏工具，将优质内容保存到飞书多维表格",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://scys.com/*",
+    "https://*.scys.com/*",
+    "https://open.feishu.cn/*",
+    "https://*.feishu.cn/*",
+    "file://*/*"
+  ],
+  "background": {
+    "service_worker": "background-full.js"
+  },
+  "content_scripts": [{
+    "matches": ["https://scys.com/*", "https://*.scys.com/*", "file:///*"],
+    "js": ["content-script.js"]
+  }],
+  "action": {
+    "default_popup": "popup-final.html",
+    "default_title": "收藏生财内容到飞书"
+  },
+  "options_page": "feishu-config-new.html"
+}

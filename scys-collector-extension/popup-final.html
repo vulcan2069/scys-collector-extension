@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生财内容收藏助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 380px;
+            height: 520px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 13px;
+            background: #ffffff;
+            color: #333;
+            overflow: hidden;
+        }
+
+        .popup-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .header h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .config-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 4px;
+            padding: 6px 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .config-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .status-bar {
+            background: #f8f9fa;
+            padding: 8px 16px;
+            font-size: 11px;
+            color: #666;
+            border-bottom: 1px solid #e5e7eb;
+            flex-shrink: 0;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .field-group {
+            margin-bottom: 12px;
+        }
+
+        .field-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .field-row .field-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            font-size: 12px;
+            color: #374151;
+        }
+
+        .required::after {
+            content: " *";
+            color: #ef4444;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 13px;
+            background: #ffffff;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
+        }
+
+        input[readonly] {
+            background: #f9fafb;
+            color: #6b7280;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 40px;
+        }
+
+        .btn-primary {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #16a34a;
+        }
+
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-top: 1px solid #e5e7eb;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .footer .btn {
+            flex: 1;
+        }
+
+        .status {
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .loading {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .elite-badge {
+            background: #f59e0b;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 8px;
+        }
+
+        .url-preview {
+            font-size: 11px;
+            color: #6b7280;
+            word-break: break-all;
+        }
+
+        .tags-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .tags-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            min-height: 32px;
+            padding: 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: #f9fafb;
+        }
+
+        .tag-item {
+            display: inline-flex;
+            align-items: center;
+            background: #22c55e;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            gap: 4px;
+        }
+
+        .tag-remove {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px;
+            line-height: 1;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .tag-remove:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .tags-display:empty::before {
+            content: "暂无标签";
+            color: #9ca3af;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="popup-container">
+        <header class="header">
+            <h2>生财内容收藏助手</h2>
+            <button class="config-btn" id="configBtn" title="配置飞书设置">⚙️</button>
+        </header>
+
+        <div class="status-bar" id="statusBar">
+            正在加载...
+        </div>
+
+        <main class="main-content">
+            <div id="statusArea"></div>
+
+            <!-- 配置状态提示 -->
+            <div id="configStatus" class="config-status" style="display: none;">
+                <div class="status warning">
+                    <strong>⚠️ 飞书配置未完成</strong><br>
+                    <small>请点击右上角齿轮图标配置飞书设置后再保存</small>
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label for="title" class="required">文章名称</label>
+                <input type="text" id="title" placeholder="正在获取标题...">
+            </div>
+
+            <div class="field-row">
+                <div class="field-group">
+                    <label for="type" class="required">类型</label>
+                    <select id="type">
+                        <option value="">选择类型</option>
+                        <option value="文章" selected>文章</option>
+                        <option value="帖子">帖子</option>
+                        <option value="课程">课程</option>
+                        <option value="直播">直播</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label for="author">作者</label>
+                    <input type="text" id="author" placeholder="正在获取作者...">
+                </div>
+            </div>
+
+            <div class="field-row">
+                <div class="field-group">
+                    <label for="featured">精华标识</label>
+                    <select id="featured">
+                        <option value="否">否</option>
+                        <option value="是">是</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label for="isRead">是否已阅读</label>
+                    <select id="isRead">
+                        <option value="否">否</option>
+                        <option value="是">是</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label for="url">页面链接</label>
+                <input type="text" id="url" placeholder="正在获取链接..." readonly>
+            </div>
+
+            <div class="field-group">
+                <label for="feishuLink">飞书链接</label>
+                <input type="text" id="feishuLink" placeholder="未检测到飞书链接">
+            </div>
+
+            <div class="field-group">
+                <label for="inspiration">启发感悟</label>
+                <textarea id="inspiration" placeholder="记录您从这篇内容中获得的启发和感悟..."></textarea>
+            </div>
+
+            <div class="field-group">
+                <label for="tags">标签</label>
+                <div class="tags-container">
+                    <input type="text" id="tagInput" placeholder="输入标签后按回车添加，多个标签用逗号分隔">
+                    <div class="tags-display" id="tagsDisplay"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <button type="button" class="btn btn-secondary" id="cancelBtn">取消</button>
+            <button type="button" class="btn btn-primary" id="saveBtn" disabled>保存收藏</button>
+        </footer>
+    </div>
+
+    <script src="js/popup-final-fixed.js"></script>
+</body>
+</html>

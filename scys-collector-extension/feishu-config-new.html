@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞书配置 - 生财收藏助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 24px 32px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .required::after {
+            content: " *";
+            color: #ef4444;
+        }
+
+        input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .help-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #16a34a;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .status {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .status.success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .guide {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .guide h3 {
+            color: #1e293b;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .guide ul {
+            margin-left: 20px;
+        }
+
+        .guide li {
+            margin-bottom: 4px;
+        }
+
+        .code {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>飞书配置</h1>
+            <p>配置飞书应用信息和多维表格</p>
+        </div>
+
+        <div class="content">
+            <div id="statusArea"></div>
+
+            <div class="guide">
+                <h3>📋 配置指南</h3>
+                <ul>
+                    <li><strong>应用ID</strong>: 格式为 <span class="code">cli_</span> 开头，长度20字符</li>
+                    <li><strong>应用密钥</strong>: 32位字母数字组合</li>
+                    <li><strong>表格URL</strong>: 完整的飞书多维表格URL地址</li>
+                </ul>
+            </div>
+
+            <form id="configForm">
+                <div class="form-group">
+                    <label for="appId" class="required">应用ID (App ID)</label>
+                    <input type="text" id="appId" placeholder="cli_a1b2c3d4e5f67890">
+                    <div class="help-text">从飞书开放平台获取，格式：cli_ + 16位字符</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="appSecret" class="required">应用密钥 (App Secret)</label>
+                    <input type="password" id="appSecret" placeholder="32位应用密钥">
+                    <div class="help-text">从飞书开放平台获取，注意保密</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="tableUrl" class="required">表格URL</label>
+                    <textarea id="tableUrl" rows="3" placeholder="https://xxx.feishu.cn/base/appToken?table=tableId"></textarea>
+                    <div class="help-text">完整的飞书多维表格URL，包含appToken和tableId参数</div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" id="testBtn">测试连接</button>
+                    <button type="button" class="btn btn-primary" id="saveBtn">保存配置</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/feishu-config-new.js"></script>
+</body>
+</html>
